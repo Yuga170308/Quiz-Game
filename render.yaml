@@ -1,5 +1,5 @@
 services:
-  # Backend service
+  # Backend service (Web Service - uses your free tier)
   - type: web
     name: quiz-app-backend
     runtime: node
@@ -12,13 +12,15 @@ services:
       - key: PORT
         value: 10000
 
-  # Frontend static site
-  - type: web
+  # Frontend (Static Site - always free on Render)
+  - type: static
     name: quiz-app-frontend
-    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://quiz-app-backend.onrender.com/api
     headers:
       - path: /*
         name: X-Frame-Options
