@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Home, Trophy, Clock, Star, RefreshCw, Sparkles, Award } from 'lucide-react';
 
-// API base URL (adjust for your backend)
-const API_BASE = 'http://localhost:5000/api';
+// API base URL - uses environment variable or fallback
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 // Utility functions for randomization
 const shuffleArray = (array) => {
