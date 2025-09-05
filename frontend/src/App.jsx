@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Home, Trophy, Clock, Star, RefreshCw, Sparkles, Award } from 'lucide-react';
+import { ChevronLeft, Home, Trophy, Clock, Star, RefreshCw, Sparkles, Award, Zap, Brain, BookOpen } from 'lucide-react';
 
 // API base URL - uses environment variable or fallback
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
@@ -23,7 +23,7 @@ const getDifficultyLevel = (score, totalQuestions) => {
 
 // Main App Component with proper image integration
 const QuizApp = () => {
-  const [currentView, setCurrentView] = useState('selection');
+  const [currentView, setCurrentView] = useState('welcome');
   const [quizzes, setQuizzes] = useState([]);
   const [currentSession, setCurrentSession] = useState(null);
   const [currentQuestionData, setCurrentQuestionData] = useState(null);
@@ -161,7 +161,7 @@ const QuizApp = () => {
   };
 
   const resetQuiz = () => {
-    setCurrentView('selection');
+    setCurrentView('welcome');
     setCurrentSession(null);
     setCurrentQuestionData(null);
     setCurrentQuizType(null);
@@ -169,7 +169,12 @@ const QuizApp = () => {
     setTimeElapsed(0);
     setIsTimerActive(false);
     setQuestionHistory([]);
-    // Scroll to top when returning to quiz selection
+    // Scroll to top when returning to welcome page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goToQuizSelection = () => {
+    setCurrentView('selection');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -190,6 +195,9 @@ const QuizApp = () => {
         </div>
       )}
       
+      {currentView === 'welcome' && (
+        <WelcomePage onStartQuest={goToQuizSelection} />
+      )}
       {currentView === 'selection' && (
         <QuizSelection quizzes={quizzes} onSelectQuiz={startQuiz} />
       )}
@@ -225,6 +233,94 @@ const QuizApp = () => {
           formatTime={formatTime}
         />
       )}
+    </div>
+  );
+};
+
+// Welcome Page Component - Exact Match to HTML Code
+const WelcomePage = ({ onStartQuest }) => {
+  const [animatedText, setAnimatedText] = useState('');
+  
+  const motivationalTexts = [
+    'Your Epic Journey of Knowledge Begins Here',
+    'Embark on a Quest for Ancient Wisdom',
+    'Challenge Your Mind, Conquer New Realms',
+    'Unlock the Secrets of Forgotten Lore',
+    'Rise as a Champion of Knowledge',
+    'Discover Treasures Hidden in Learning'
+  ];
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setAnimatedText(motivationalTexts[index]);
+      index = (index + 1) % motivationalTexts.length;
+    }, 3000);
+    
+    // Set initial text
+    setAnimatedText(motivationalTexts[0]);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="text-white" style={{ fontFamily: 'Roboto, sans-serif', overflow: 'hidden', background: '#0c0a1a' }}>
+      {/* Background Video */}
+      <video 
+        autoPlay 
+        loop 
+        muted 
+        className="background-video"
+        poster="https://storage.googleapis.com/dnyanquest-assets/background-poster.jpg"
+      >
+        <source src="https://storage.googleapis.com/dnyanquest-assets/knowledge-quest-bg.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      
+      <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-[#0c0a1a]"></div>
+        <div className="relative z-10 flex flex-col items-center justify-center text-center p-6 w-full max-w-6xl">
+          
+          {/* Hero Title with Custom Fonts */}
+          <h1 className="text-7xl md:text-9xl mb-4 glow-effect">
+            <span className="text-yellow-400 font-devanagari">ज्ञान</span><span className="font-cinzel">Quest</span>
+          </h1>
+          
+          <p className="text-2xl md:text-3xl text-gray-300 mb-12 tracking-widest font-light animate-fadeIn">
+            {animatedText}
+          </p>
+          
+          {/* Feature Cards with Material Icons */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 w-full max-w-4xl">
+            <div className="visual-card flex flex-col items-center gap-4 p-6 rounded-2xl cursor-pointer">
+              <span className="material-icons text-5xl text-yellow-500">emoji_events</span>
+              <h3 className="text-xl font-bold">Claim Glorious Rewards</h3>
+              <p className="text-gray-400 text-sm">Conquer challenges and earn unique treasures and accolades.</p>
+            </div>
+            
+            <div className="visual-card flex flex-col items-center gap-4 p-6 rounded-2xl cursor-pointer">
+              <span className="material-icons text-5xl text-blue-400">explore</span>
+              <h3 className="text-xl font-bold">Explore Lost Worlds</h3>
+              <p className="text-gray-400 text-sm">Navigate through ancient realms of forgotten wisdom.</p>
+            </div>
+            
+            <div className="visual-card flex flex-col items-center gap-4 p-6 rounded-2xl cursor-pointer">
+              <span className="material-icons text-5xl text-red-500">shield</span>
+              <h3 className="text-xl font-bold">Face Epic Challenges</h3>
+              <p className="text-gray-400 text-sm">Test your mettle against formidable intellectual quests.</p>
+            </div>
+          </div>
+          
+          {/* Call to Action Button */}
+          <button 
+            onClick={onStartQuest}
+            className="bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-400 hover:to-orange-500 text-black font-bold py-5 px-16 rounded-full text-2xl shadow-lg btn-pulse flex items-center gap-4"
+          >
+            <span className="material-icons text-3xl">rocket_launch</span>
+            Begin Your Epic Journey
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
